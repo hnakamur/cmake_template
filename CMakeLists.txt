@@ -119,3 +119,20 @@ set(CPACK_PACKAGE_FILE_NAME
 )
 
 include(CPack)
+
+include(cmake/clang_format.cmake)
+add_clang_format_target(clang_format_src src)
+add_clang_format_target(clang_format_tests test)
+add_custom_target(clang_format DEPENDS clang_format_src clang_format_tests)
+
+include(cmake/cmake_format.cmake)
+add_cmake_format_target_toplevel(cmake_format_toplevel)
+add_cmake_format_target(cmake_format_cmake_dir cmake)
+add_cmake_format_target(cmake_format_src_dir src)
+add_cmake_format_target(cmake_format_tests_dir test)
+add_custom_target(
+  cmake_format DEPENDS cmake_format_toplevel cmake_format_cmake_dir cmake_format_src_dir cmake_format_tests_dir
+)
+
+# NOTE: Remove ALL below if you do not want to execute the formatting target every time.
+add_custom_target(format ALL DEPENDS clang_format cmake_format)
