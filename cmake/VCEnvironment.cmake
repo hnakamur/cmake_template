@@ -8,7 +8,8 @@ macro(detect_architecture)
   elseif(
     CMAKE_SYSTEM_PROCESSOR_LOWER STREQUAL x64
     OR CMAKE_SYSTEM_PROCESSOR_LOWER STREQUAL x86_64
-    OR CMAKE_SYSTEM_PROCESSOR_LOWER STREQUAL amd64)
+    OR CMAKE_SYSTEM_PROCESSOR_LOWER STREQUAL amd64
+  )
     set(VCVARSALL_ARCH x64)
   elseif(CMAKE_SYSTEM_PROCESSOR_LOWER STREQUAL arm)
     set(VCVARSALL_ARCH arm)
@@ -34,12 +35,10 @@ function(run_vcvarsall)
     find_file(
       VCVARSALL_FILE
       NAMES vcvarsall.bat
-      PATHS "${MSVC_DIR}"
-            "${MSVC_DIR}/.."
-            "${MSVC_DIR}/../.."
-            "${MSVC_DIR}/../../../../../../../.."
+      PATHS "${MSVC_DIR}" "${MSVC_DIR}/.." "${MSVC_DIR}/../.." "${MSVC_DIR}/../../../../../../../.."
             "${MSVC_DIR}/../../../../../../.."
-      PATH_SUFFIXES "VC/Auxiliary/Build" "Common7/Tools" "Tools")
+      PATH_SUFFIXES "VC/Auxiliary/Build" "Common7/Tools" "Tools"
+    )
 
     if(EXISTS ${VCVARSALL_FILE})
       # detect the architecture
@@ -48,12 +47,12 @@ function(run_vcvarsall)
       # run vcvarsall and print the environment variables
       message(STATUS "Running `${VCVARSALL_FILE} ${VCVARSALL_ARCH}` to set up the MSVC environment")
       execute_process(
-        COMMAND
-          "cmd" "/c" ${VCVARSALL_FILE} ${VCVARSALL_ARCH} #
-          "&&" "call" "echo" "VCVARSALL_ENV_START" #
-          "&" "set" #
+        COMMAND "cmd" "/c" ${VCVARSALL_FILE} ${VCVARSALL_ARCH} #
+                "&&" "call" "echo" "VCVARSALL_ENV_START" #
+                "&" "set" #
         OUTPUT_VARIABLE VCVARSALL_OUTPUT
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
 
       # parse the output and get the environment variables string
       find_substring_by_prefix(VCVARSALL_ENV "VCVARSALL_ENV_START" "${VCVARSALL_OUTPUT}")
@@ -65,7 +64,8 @@ function(run_vcvarsall)
       message(
         WARNING
           "Could not find `vcvarsall.bat` for automatic MSVC environment preparation. Please manually open the MSVC command prompt and rebuild the project.
-      ")
+      "
+      )
     endif()
   endif()
 endfunction()
