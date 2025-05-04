@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.21)
 # manual dependency management
 
 # Only set the cxx_standard if it is not set by someone else
-if (NOT DEFINED CMAKE_CXX_STANDARD)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 23)
 endif()
 
@@ -20,11 +20,11 @@ project(
   VERSION 0.0.1
   DESCRIPTION ""
   HOMEPAGE_URL "%%myurl%%"
-  LANGUAGES CXX C)
+  LANGUAGES CXX C
+)
 
 include(cmake/PreventInSourceBuilds.cmake)
 include(ProjectOptions.cmake)
-
 
 myproject_setup_options()
 
@@ -39,12 +39,9 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 set(GIT_SHA
     "Unknown"
-    CACHE STRING "SHA this build was generated from")
-string(
-  SUBSTRING "${GIT_SHA}"
-            0
-            8
-            GIT_SHORT_SHA)
+    CACHE STRING "SHA this build was generated from"
+)
+string(SUBSTRING "${GIT_SHA}" 0 8 GIT_SHORT_SHA)
 
 target_compile_features(myproject_options INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
@@ -73,10 +70,9 @@ if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
-
 if(myproject_BUILD_FUZZ_TESTS)
   message(AUTHOR_WARNING "Building Fuzz Tests, using fuzzing sanitizer https://www.llvm.org/docs/LibFuzzer.html")
-  if (NOT myproject_ENABLE_SANITIZER_ADDRESS AND NOT myproject_ENABLE_SANITIZER_THREAD)
+  if(NOT myproject_ENABLE_SANITIZER_ADDRESS AND NOT myproject_ENABLE_SANITIZER_THREAD)
     message(WARNING "You need asan or tsan enabled for meaningful fuzz testing")
   endif()
   add_subdirectory(fuzz_test)
@@ -103,10 +99,7 @@ include(cmake/PackageProject.cmake)
 # Add other targets that you want installed here, by default we just package the one executable
 # we know we want to ship
 myproject_package_project(
-  TARGETS
-  intro
-  myproject_options
-  myproject_warnings
+  TARGETS intro myproject_options myproject_warnings
   # FIXME: this does not work! CK
   # PRIVATE_DEPENDENCIES_CONFIGURED project_options project_warnings
 )
