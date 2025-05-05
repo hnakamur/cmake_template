@@ -30,6 +30,7 @@ jobs:
       # and your own projects needs
       matrix:
         os:
+          - self-hosted
           - ubuntu-latest
           - macos-latest
           - windows-latest
